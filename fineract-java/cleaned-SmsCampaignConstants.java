@@ -1,0 +1,9 @@
+
+package org.apache.fineract.infrastructure.campaigns.sms.constants;
+public interface SmsCampaignConstants {
+    String RESOURCE_NAME = "SMSCAMPAIGN";
+    String SMS_BRIDGE = "sms_bridge";
+    String SMS = "sms";
+    String FINERACT_PLATFORM_TENANT_ID = "Fineract-Platform-TenantId";
+    String FINERACT_TENANT_APP_KEY = "Fineract-Tenant-App-Key";
+}

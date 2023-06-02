@@ -1,0 +1,60 @@
+
+package org.apache.fineract.infrastructure.bulkimport.constants;
+public final class LoanConstants {
+    private LoanConstants() {
+    }
+    public static final int OFFICE_NAME_COL = 0;
+    public static final int LOAN_TYPE_COL = 1;
+    public static final int CLIENT_NAME_COL = 2;
+    public static final int CLIENT_EXTERNAL_ID = 3;
+    public static final int PRODUCT_COL = 4;
+    public static final int LOAN_OFFICER_NAME_COL = 5;
+    public static final int SUBMITTED_ON_DATE_COL = 6;
+    public static final int APPROVED_DATE_COL = 7;
+    public static final int DISBURSED_DATE_COL = 8;
+    public static final int DISBURSED_PAYMENT_TYPE_COL = 9;
+    public static final int FUND_NAME_COL = 10;
+    public static final int PRINCIPAL_COL = 11;
+    public static final int NO_OF_REPAYMENTS_COL = 12;
+    public static final int REPAID_EVERY_COL = 13;
+    public static final int REPAID_EVERY_FREQUENCY_COL = 14;
+    public static final int LOAN_TERM_COL = 15;
+    public static final int LOAN_TERM_FREQUENCY_COL = 16;
+    public static final int NOMINAL_INTEREST_RATE_COL = 17;
+    public static final int NOMINAL_INTEREST_RATE_FREQUENCY_COL = 18;
+    public static final int AMORTIZATION_COL = 19;
+    public static final int INTEREST_METHOD_COL = 20;
+    public static final int INTEREST_CALCULATION_PERIOD_COL = 21;
+    public static final int ARREARS_TOLERANCE_COL = 22;
+    public static final int REPAYMENT_STRATEGY_COL = 23;
+    public static final int GRACE_ON_PRINCIPAL_PAYMENT_COL = 24;
+    public static final int GRACE_ON_INTEREST_PAYMENT_COL = 25;
+    public static final int GRACE_ON_INTEREST_CHARGED_COL = 26;
+    public static final int INTEREST_CHARGED_FROM_COL = 27;
+    public static final int FIRST_REPAYMENT_COL = 28;
+    public static final int TOTAL_AMOUNT_REPAID_COL = 29;
+    public static final int LAST_REPAYMENT_DATE_COL = 30;
+    public static final int REPAYMENT_TYPE_COL = 31;
+    public static final int STATUS_COL = 32;
+    public static final int LOAN_ID_COL = 33;
+    public static final int FAILURE_REPORT_COL = 34;
+    public static final int EXTERNAL_ID_COL = 35;
+    public static final int CHARGE_NAME_1 = 36;
+    public static final int CHARGE_AMOUNT_1 = 37;
+    public static final int CHARGE_DUE_DATE_1 = 38;
+    public static final int CHARGE_NAME_2 = 39;
+    public static final int CHARGE_AMOUNT_2 = 40;
+    public static final int CHARGE_DUE_DATE_2 = 41;
+    public static final int GROUP_ID = 42;
+    public static final int LOOKUP_CLIENT_NAME_COL = 43;
+    public static final int LOOKUP_CLIENT_EXTERNAL_ID = 44;
+    public static final int LOOKUP_ACTIVATION_DATE_COL = 45;
+    public static final int LINK_ACCOUNT_ID = 46;
+    public static final int LOAN_COLLATERAL_ID = 47;
+    public static final int LOAN_COLLATERAL_QUANTITY = 48;
+    public static final int CHARGE_AMOUNT_TYPE_1 = 49;
+    public static final int CHARGE_AMOUNT_TYPE_2 = 50;
+    public static final String LOAN_TYPE_INDIVIDUAL = "Individual";
+    public static final String LOAN_TYPE_GROUP = "Group";
+    public static final String LOAN_TYPE_JLG = "JLG";
+}
