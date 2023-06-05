@@ -10,9 +10,8 @@ We've setup a .gitconfig file so that all Juptyer Notebook cell outputs are mute
     
         pip install Jupyter
 
-**Note For Windows Users**
-
-You must have the Jupyter environment path set correctly prior to running the .gitconfig command below (make sure just typing `Jupyter` in a terminal doesn't fail). The default location that you'll need to add to your `PATH` environment variable (System or User) is `C:\Users\<user>\AppData\Roaming\Python\Python<version>\Scripts`.
+> **Warning**
+> You must have the Jupyter environment path set correctly prior to running the .gitconfig command below (make sure just typing `Jupyter` in a terminal doesn't fail). For Windows users, the default location that you'll need to add to your `PATH` environment variable (System or User) is `C:\Users\<user>\AppData\Roaming\Python\Python<version>\Scripts`, which is different than the system default installtion path (`C:\Python\Python<version>\Scripts`).
 
 2. Run the following command so that you include the Jupyter Notebook Output Filter:
 
