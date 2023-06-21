@@ -1,0 +1,6 @@
+#### PROMPT #####
+Function_name
+
+
+i.e.
+{"prompt": "Function_name: <<function_name>>\n\n Description: <<describe_function>>\n\n completion: <<code>> }
