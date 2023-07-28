@@ -1,5 +1,4 @@
-variable "TF_VAR_repo_name"{
+variable "TF_VAR_resource_name"{
   description = "name of the repo"
   type = string
-  default = "testrepo1"
 }
