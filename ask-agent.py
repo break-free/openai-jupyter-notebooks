@@ -1,6 +1,8 @@
 # Pre-reqs for Terraform Tools:
 # Install Terraform CLI
 # Create a folder in your current working directory that contains Terraform code to deploy (example in terraform-test/)
+# A bucket to store the state files in S3 already exists and is set in teh backend.tf file
+# A variable called TF_VAR_resource_name exists and is used for the name in terraform resource to be deployed
 # export AZDO_PERSONAL_ACCESS_TOKEN=
 # export AWS_ACCESS_KEY_ID=
 # export AWS_SECRET_ACCESS_KEY=
@@ -82,8 +84,6 @@ class TerraformInitTool(BaseTool):
         removeTfLock = f"rm -r {folder_path}/.terraform.lock.hcl"
         os.system(removeTfLock)
 
-        #resource_name = "test1"
-
         command = f"terraform -chdir={folder_path} init -backend-config='key={resource_name}'"
         result = os.system(command)
         
@@ -107,7 +107,7 @@ class TerraformPlanTool(BaseTool):
     #args_schema: Type[TerraformSchema] = TerraformSchema
 
     def _run(self, folder_path: str, resource_name: str):
-        command = f"terraform -chdir={folder_path} plan -var 'TF_VAR_repo_name={resource_name}'"
+        command = f"terraform -chdir={folder_path} plan -var 'TF_VAR_resource_name={resource_name}'"
         result = os.system(command)
 
         if result != 0:
@@ -128,7 +128,7 @@ class TerraformApplyTool(BaseTool):
     #args_schema: Type[TerraformSchema] = TerraformSchema
 
     def _run(self, folder_path: str, resource_name: str):
-        command = f"terraform -chdir={folder_path} apply -var 'TF_VAR_repo_name={resource_name}'"
+        command = f"terraform -chdir={folder_path} apply -var 'TF_VAR_resource_name={resource_name}'"
         result = os.system(command)
 
         if result != 0:
@@ -257,5 +257,5 @@ agent = initialize_agent(
 #agent("Can you search the documentation in the folder called docs-search?")
 #agent("Can you test the code in the folder docs-search?")
 #agent("Can you test the code in the folder docs-search and the connection string is 'iaoubrflaiewbrva'")
-#agent("can you deploy the infrastructure in the terraform-test folder with a resource name of test-repo-2?")
+agent("can you deploy the infrastructure in the terraform-test folder with a resource name of test-repo-1?")
 #agent("deploy infrastructure")
