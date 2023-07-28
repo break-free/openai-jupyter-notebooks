@@ -12,7 +12,7 @@ data "azuredevops_project" "current_project" {
 
 resource "azuredevops_git_repository" "repo" {
   project_id = data.azuredevops_project.current_project.project_id
-  name  = var.TF_VAR_repo_name
+  name  = var.TF_VAR_resource_name
   default_branch = "refs/heads/main"
   initialization {
     init_type = "Clean"
