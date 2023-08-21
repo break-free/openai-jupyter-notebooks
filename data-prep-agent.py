@@ -79,7 +79,8 @@ class CreateDataPrepPlanTool(BaseTool, BaseSettings):
         Review the information on the dataset below and determine which data cleaning steps should be done in preparation for machine learning models.
         Be specific in what steps should be completed.
         If there is a column that should appear in multiple steps that may be conflicting, include it only in the step that makes the most sense for that column.
-
+        Handling categorical and ordinal columns should occur towards the end of the steps, but before handling any imbalance in the target variable.
+        
         Data Information:
         The target variable for the dataset is {targetVar}.
         {dataDescription}. The features are:
@@ -439,7 +440,7 @@ agent = initialize_agent(
 # query = input("prompt: ")
 # agent(query)
 
-agent("Can you prepare a dataset for machine learning models? Use Bank_Personal_Loan.csv located in the datasets/ folder.")
+agent("Can you prepare a dataset for machine learning models? Use fraud_oracle.csv located in the datasets/ folder.")
 #agent("Can you preprocess text in datasets/feedback1.csv and convert the Reports column into categories?")
 
 
