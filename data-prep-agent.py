@@ -11,6 +11,7 @@ from langchain.tools import BaseTool
 from langchain.agents import initialize_agent, load_tools
 from langchain.chains.conversation.memory import ConversationBufferWindowMemory
 from langchain.chat_models import ChatOpenAI
+from sklearn.preprocessing import LabelEncoder, OrdinalEncoder
 import json
 import openai
 import pandas as pd
@@ -79,7 +80,9 @@ class CreateDataPrepPlanTool(BaseTool, BaseSettings):
         Review the information on the dataset below and determine which data cleaning steps should be done in preparation for machine learning models.
         Be specific in what steps should be completed.
         If there is a column that should appear in multiple steps that may be conflicting, include it only in the step that makes the most sense for that column.
-        Handling categorical and ordinal columns should occur towards the end of the steps, but before handling any imbalance in the target variable.
+        When ordering the steps, handling categorical and ordinal columns should occur towards the end of the list, but always before handling any imbalance in the target variable.
+        An individual column should not appear in both the categorical and ordinal handling steps - it should appear in one or the other.
+        List all columns explicitly if they need to be adjusted in a step.
         
         Data Information:
         The target variable for the dataset is {targetVar}.
@@ -252,6 +255,48 @@ class EncodeCategoricalValuesTool(BaseTool, BaseSettings):
         raise NotImplementedError("This tool does not support async")
 
 
+class HandleOrdinalValuesTool(BaseTool, BaseSettings):
+    name = "Handle Ordinal Values Tool"
+    description = (
+        "Use this tool handle ordinal values."
+    )
+    args_schema: Type[standardToolArgs] = standardToolArgs
+
+    def _run(self, csv_file: str, column_name: list):
+        substr = "."
+        idx = csv_file.index(substr)
+        updatedCSV = csv_file[:idx] + "_updated" + csv_file[idx:]
+
+        try:
+            df = pd.read_csv(updatedCSV)
+        except:
+            df = pd.read_csv(csv_file)
+        
+        ordinal_fields_with_labelencoder = column_name
+
+        for field in ordinal_fields_with_labelencoder:
+            catValues = df[field].unique()
+
+            message = f'''
+            The following list of values is the categories for an ordinal column in a large dataset: {catValues}
+            Order the values from least to greatest so that the order can be used for ordinal encoding.
+            Response only with the list of values in the following format: ["value 1", "value 2", "value 3"]
+            '''
+
+            catArray = askLLM(message, "gpt-4")
+            catList = ast.literal_eval(catArray)
+
+            ordinal_mapping = {field: index for index, field in enumerate(catList)}
+            df[field] = df[field].map(ordinal_mapping)
+
+        df.to_csv(updatedCSV, index=False)
+
+        return f"Successfully encoded the following columns: {column_name}"
+    
+    def _arun(self, query: str):
+        raise NotImplementedError("This tool does not support async")
+
+
 class HandleOutliersTool(BaseTool, BaseSettings):
     name = "Handle Outliers Tool"
     description = (
@@ -370,7 +415,7 @@ class HandleOutliersTool(BaseTool, BaseSettings):
 class HandleNegativeValuesTool(BaseTool, BaseSettings):
     name = "Handle Negative Values Tool"
     description = (
-        "Use this remove negative values from columns when those negative values don't make sense in the business context."
+        "Use this to remove negative values from columns when those negative values don't make sense in the business context."
     )
     args_schema: Type[standardToolArgs] = standardToolArgs
 
@@ -391,6 +436,53 @@ class HandleNegativeValuesTool(BaseTool, BaseSettings):
         df.to_csv(updatedCSV, index=False)
 
         return "Negative values successfully replaced."
+    
+    def _arun(self, query: str):
+        raise NotImplementedError("This tool does not support async")
+    
+
+class HandleMissingValuesTool(BaseTool, BaseSettings):
+    name = "Handle Missing Values Tool"
+    description = (
+        "Use this to handle missing values in a dataset column."
+    )
+    args_schema: Type[standardToolArgs] = standardToolArgs
+
+    def _run(self, csv_file: str, column_name: list):
+        substr = "."
+        idx = csv_file.index(substr)
+        updatedCSV = csv_file[:idx] + "_updated" + csv_file[idx:]
+
+        try:
+            df = pd.read_csv(updatedCSV)
+        except:
+            df = pd.read_csv(csv_file)
+        
+        successCols = []
+        failCols = []
+
+        for col in column_name:
+            # At some point, we should query the LLM for each column to determine the best method for filling missing values.
+            # Currently, gpt-4 is inconsistent with determining this and often comes to the wrong conclusion.
+            # Another option is to build something that interacts with the user, so the user ultimately picks the correct
+            # option with the help of the LLM.
+
+            dataType = df.dtypes[col]
+
+            try:
+                if dataType == "object":
+                    df[col] = df[col].transform(lambda x: x.fillna(x.mode()))
+                else:
+                    df[col] = df[col].transform(lambda x: x.fillna(x.median()))
+                
+                successCols.append(col)              
+            
+            except:
+                failCols.append(col)
+
+        df.to_csv(updatedCSV, index=False)
+
+        return f"Missing values successfully replaced: {successCols}. Missing values not replaced: {failCols}"
     
     def _arun(self, query: str):
         raise NotImplementedError("This tool does not support async")
@@ -420,8 +512,10 @@ tools.append(CreateDataPrepPlanTool())
 tools.append(TextPreprocessingTool())
 tools.append(RemoveColumnsTool())
 tools.append(EncodeCategoricalValuesTool())
+tools.append(HandleOrdinalValuesTool())
 tools.append(HandleOutliersTool())
 tools.append(HandleNegativeValuesTool())
+tools.append(HandleMissingValuesTool())
 
 # initialize agent with tools
 agent = initialize_agent(
@@ -440,28 +534,6 @@ agent = initialize_agent(
 # query = input("prompt: ")
 # agent(query)
 
-agent("Can you prepare a dataset for machine learning models? Use fraud_oracle.csv located in the datasets/ folder.")
 #agent("Can you preprocess text in datasets/feedback1.csv and convert the Reports column into categories?")
 
-
-# df = pd.read_csv("datasets/Bank_Personal_Loan.csv")
-# data = df.head(10)
-# buf = io.StringIO()
-# s = df.info(buf=buf)
-# info = buf.getvalue()
-# descStats = df.describe()
-
-# #skew of a normal distribution is -1 to 1, so anything far outside this range indicates big outlier
-# print(df['Experience'].skew())
-
-# f = open("datasetInfo.json")
-# jsonFile = json.load(f)
-# targetVar = jsonFile["Column Descriptions"]["Target"]
-# dataDescription = jsonFile["Column Descriptions"]["Description"]
-# columnsDescription = jsonFile["Column Descriptions"]["Columns"]
-
-
-# bins = pd.cut(df["Experience"], bins=20, include_lowest=True)
-# bucket_counts = bins.value_counts().sort_index()
-# print(bucket_counts)
-# print(df["Experience"].value_counts())
+agent("Can you prepare a dataset for machine learning models? Use Car_Insurance_Claim.csv located in the datasets/ folder.")
