@@ -1,0 +1,27 @@
+{
+    "Column Descriptions": {
+        "Target": "OUTCOME",
+        "Description": "Contains car insurance data for the year. The outcome column indicates 1 if a customer filed a claim that year, else 0.",
+        "Columns": {
+            "ID": "unqiue ID for customer",
+            "AGE": "age of the driver",
+            "GENDER": "male/female",
+            "RACE": "majority/minority",
+            "DRIVING_EXPERIENCE": "amount of driving experience",
+            "EDUCATION": "education level of the driver",
+            "INCOME": "income level of the driver",
+            "CREDIT_SCORE": "credit score expressed as decimal",
+            "VEHICLE_OWNERSHIP": "1 if driver owns the vehicle, else 0",
+            "VEHICLE_YEAR": "year vehicle was made",
+            "MARRIED": "1 if driver is married, else 0",
+            "CHILDREN": "1 if driver has children, else 0",
+            "POSTAL_CODE": "postal code of the driver's home",
+            "ANNUAL_MILEAGE": "estimate for annual miles driven",
+            "VEHICLE_TYPE": "type of vehicle",
+            "SPEEDING_VIOLATIONS": "number of speeding violations for the driver",
+            "DUIS": "number of DUIs for the driver",
+            "PAST_ACCIDENTS": "number of past accidents driver has been in",
+            "OUTCOME": "1 if a customer filed a claim that year, else 0"
+        }
+    }
+}
